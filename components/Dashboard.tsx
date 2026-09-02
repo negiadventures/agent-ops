@@ -19,6 +19,7 @@ import {
   totalTokens,
 } from "@/lib/metrics";
 import type { Run } from "@/lib/types";
+import ContactCard from "@/components/ContactCard";
 import { cn } from "@/lib/utils";
 
 const STATUS_STYLE: Record<Run["status"], string> = {
@@ -364,6 +365,12 @@ export default function Dashboard({ runs }: { runs: Run[] }) {
           </p>
         </footer>
       </div>
+
+      <ContactCard
+        title="Want this kind of visibility over your own agents?"
+        container="max-w-7xl"
+        pitch="The dashboard is a demo, but the work behind it isn't: tracing agent runs, attributing cost, and putting approval gates where they actually matter. If you're building something similar and want a hand, tell me what you're working on."
+      />
     </main>
   );
 }

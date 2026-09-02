@@ -22,20 +22,20 @@ export default function Header() {
             GitHub
           </a>
           <a
-            href="https://schemadrift.negiventures.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden text-[13px] text-muted transition-colors hover:text-fg sm:block"
-          >
-            Schema Drift
-          </a>
-          <a
             href="https://negiventures.com"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden text-[13px] text-muted transition-colors hover:text-fg sm:block"
           >
             Negi Ventures
+          </a>
+          {/* Was a link to Schema Drift, which meant nothing to a first-time
+              visitor and pointed sideways instead of at the enquiry form. */}
+          <a
+            href="#contact"
+            className="rounded-full border border-line-2 px-3 py-1.5 text-[13px] text-fg transition-colors hover:bg-fg hover:text-bg"
+          >
+            Build one
           </a>
         </nav>
       </div>
