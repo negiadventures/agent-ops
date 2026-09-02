@@ -1,7 +1,13 @@
 # Agent Ops
 
-Observability for coding agents. Replays real agent runs: tool latency, token
-spend, policy gates, approvals and failures.
+A demo dashboard for coding-agent observability: tool latency, token spend,
+policy gates, approvals and failures.
+
+> **The data is simulated.** The interface, replay engine, percentile and cost
+> maths and the diff renderer are real and tested. The runs they display are
+> generated, not captured from a live agent runtime. `Run` and `RunEvent` map
+> closely onto OpenTelemetry spans, so pointing this at real traces is a
+> data-source change rather than a rewrite.
 
 ```bash
 npm install

@@ -114,10 +114,20 @@ export default function Dashboard({ runs }: { runs: Run[] }) {
             </p>
             <h1 className="mt-2 text-[26px] font-semibold tracking-[-0.02em]">Agent Ops</h1>
           </div>
-          <p className="max-w-[46ch] text-[13px] leading-relaxed text-muted">
-            Replay of {runs.length} coding-agent runs: tool latency, token spend,
-            policy gates and the approvals that stopped a patch.
-          </p>
+          <div className="max-w-[46ch]">
+            <p className="text-[13px] leading-relaxed text-muted">
+              Replay of {runs.length} coding-agent runs: tool latency, token spend,
+              policy gates and the approvals that stopped a patch.
+            </p>
+            {/* Said plainly and up front. A demo that admits it is a demo costs
+                nothing; one that quietly is not costs credibility. */}
+            <p className="mt-2.5 inline-flex items-center gap-2 rounded-full border border-warn/30 bg-warn/10 px-3 py-1">
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-warn" />
+              <span className="font-mono text-[10.5px] tracking-wide text-warn uppercase">
+                Demo · simulated data
+              </span>
+            </p>
+          </div>
         </header>
 
         {/* Fleet summary */}
@@ -334,6 +344,39 @@ export default function Dashboard({ runs }: { runs: Run[] }) {
             </div>
           </section>
         </div>
+
+        <footer className="mt-10 border-t border-line pt-6">
+          <p className="max-w-[80ch] text-[12.5px] leading-relaxed text-dim">
+            <strong className="font-semibold text-muted">This dashboard replays a
+            generated corpus.</strong>{" "}
+            The interface, replay engine, percentile and cost maths and the diff
+            renderer are all real and tested; the runs they display are synthetic,
+            not captured from a live agent runtime. The{" "}
+            <code className="text-muted">Run</code> and{" "}
+            <code className="text-muted">RunEvent</code> shapes map closely onto
+            OpenTelemetry spans, so pointing it at real traces is a data-source
+            change rather than a rewrite.
+          </p>
+          <p className="mt-3 font-mono text-[11px] text-dim">
+            <a
+              href="https://github.com/negiadventures/agent-ops"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-fg"
+            >
+              source
+            </a>
+            {" · "}
+            <a
+              href="https://negiventures.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-fg"
+            >
+              Negi Ventures
+            </a>
+          </p>
+        </footer>
       </div>
     </main>
   );
