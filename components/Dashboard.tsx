@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import CountUp from "@/components/CountUp";
 import EventStream from "@/components/EventStream";
 import FlowDiagram from "@/components/FlowDiagram";
+import Header from "@/components/Header";
 import PatchDiff from "@/components/PatchDiff";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { DotPattern } from "@/components/ui/dot-pattern";
@@ -106,13 +107,17 @@ export default function Dashboard({ runs }: { runs: Run[] }) {
         )}
       />
 
+      <Header />
+
       <div className="relative mx-auto max-w-7xl px-6 py-10">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="font-mono text-[11px] tracking-[0.16em] text-dim uppercase">
               Agent observability
             </p>
-            <h1 className="mt-2 text-[26px] font-semibold tracking-[-0.02em]">Agent Ops</h1>
+            <h1 className="mt-2 text-[26px] font-semibold tracking-[-0.02em]">
+              Replay what your agents actually did
+            </h1>
           </div>
           <div className="max-w-[46ch]">
             <p className="text-[13px] leading-relaxed text-muted">
@@ -356,25 +361,6 @@ export default function Dashboard({ runs }: { runs: Run[] }) {
             <code className="text-muted">RunEvent</code> shapes map closely onto
             OpenTelemetry spans, so pointing it at real traces is a data-source
             change rather than a rewrite.
-          </p>
-          <p className="mt-3 font-mono text-[11px] text-dim">
-            <a
-              href="https://github.com/negiadventures/agent-ops"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:text-fg"
-            >
-              source
-            </a>
-            {" · "}
-            <a
-              href="https://negiventures.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:text-fg"
-            >
-              Negi Ventures
-            </a>
           </p>
         </footer>
       </div>
