@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-bg: #07080a;
+  --color-panel: #0d0f13;
+  --color-panel-2: #12151b;
+  --color-line: #1e222a;
+  --color-line-2: #2c313b;
+
+  --color-fg: #e9ecf2;
+  --color-muted: #9aa2b1;
+  --color-dim: #818999;
+
+  --color-ok: #3ddc97;
+  --color-warn: #ffb454;
+  --color-fail: #ff5c7a;
+  --color-info: #7c9eff;
+
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, monospace;
+}
+
+body { background: var(--color-bg); color: var(--color-fg); -webkit-font-smoothing: antialiased; }
+::selection { background: #7c9eff; color: #07080a; }
+:focus-visible { outline: 2px solid #7c9eff; outline-offset: 2px; border-radius: 4px; }
+
+/* thin scrollbars inside panels */
+.scroll-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+.scroll-thin::-webkit-scrollbar-thumb { background: var(--color-line-2); border-radius: 3px; }
+.scroll-thin::-webkit-scrollbar-track { background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+@theme inline {
+  --animate-ripple: ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite;
+  @keyframes ripple {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    }
+  50% {
+    transform: translate(-50%, -50%) scale(0.9);
+    }
+  }
+}

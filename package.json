@@ -1,0 +1,31 @@
+{
+  "name": "agent-ops",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "vitest run",
+    "seed": "node scripts/generate-traces.mjs"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "motion": "^13.1.1",
+    "next": "^16.3.4",
+    "next-themes": "^0.4.6",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "shiki": "^4.4.3",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.10.7",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}
