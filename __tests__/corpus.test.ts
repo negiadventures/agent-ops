@@ -46,3 +46,20 @@ describe("seed corpus", () => {
     }
   });
 });
+
+describe("patches", () => {
+  it("gives every run a distinct patch", () => {
+    const afters = data.map((r) => r.patch?.after).filter(Boolean);
+    expect(afters.length).toBe(data.length);
+    // The whole point of the fix: an identical diff on every run reads as fake.
+    expect(new Set(afters).size).toBeGreaterThan(data.length / 2);
+  });
+
+  it("every patch actually changes something", () => {
+    for (const r of data) {
+      expect(r.patch).toBeDefined();
+      expect(r.patch!.before).not.toBe(r.patch!.after);
+      expect(r.patch!.file.length).toBeGreaterThan(0);
+    }
+  });
+});

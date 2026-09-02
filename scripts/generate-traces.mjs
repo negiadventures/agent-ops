@@ -96,6 +96,56 @@ async function inventTasks() {
   }
 }
 
+/**
+ * A patch per task. Reusing one before/after across every run was the detail
+ * that gave the corpus away: everything else varies, so an identical diff on
+ * 14 different tasks reads as synthetic immediately.
+ */
+async function inventPatches(specs) {
+  const fallback = (spec) => ({
+    file: spec.files[0],
+    before: `export async function handler(req: Request) {\n  const body = await req.json();\n  return process(body);\n}`,
+    after: `export async function handler(req: Request) {\n  const body = await req.json();\n  const validated = schema.parse(body);\n  return process(validated);\n}`,
+  });
+  if (!KEY) return specs.map(fallback);
+
+  console.log("asking the model for per-task patches…");
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${KEY}` },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        temperature: 0.6,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: "You write small realistic code diffs. Reply with JSON only." },
+          {
+            role: "user",
+            content:
+              'For each task give a tiny before/after code pair showing the change. Reply {"patches":[{"file":string,"before":string,"after":string}]} in the same order, one per task. 4-12 lines each, real TypeScript or SQL, "after" must differ meaningfully from "before". Use \\n for newlines. Tasks: ' +
+              JSON.stringify(specs.map((s) => ({ task: s.task, file: s.files[0] }))),
+          },
+        ],
+      }),
+    });
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    const json = await res.json();
+    const parsed = JSON.parse(json.choices[0].message.content);
+    const out = specs.map((s, i) => {
+      const p = (parsed.patches || [])[i];
+      if (!p?.before || !p?.after || p.before === p.after) return fallback(s);
+      return { file: p.file || s.files[0], before: String(p.before), after: String(p.after) };
+    });
+    const distinct = new Set(out.map((p) => p.after)).size;
+    console.log(`  got ${distinct} distinct patches for ${specs.length} tasks`);
+    return out;
+  } catch (e) {
+    console.warn("  patch generation failed, using fallback:", e.message);
+    return specs.map(fallback);
+  }
+}
+
 const REPOS = ["acme/payments-api","acme/ledger","acme/gateway","acme/billing","acme/webhooks","acme/quotes"];
 
 /**
@@ -108,7 +158,7 @@ const OUTCOMES = [
   "needs_approval","succeeded",
 ];
 
-function buildRun(spec, i) {
+function buildRun(spec, i, patch) {
   const intended = OUTCOMES[i % OUTCOMES.length];
   const repo = /^[\w.-]+\/[\w.-]+$/.test(spec.repo || "") && i % 3 === 0 ? spec.repo : REPOS[i % REPOS.length];
   const events = [];
@@ -218,16 +268,15 @@ function buildRun(spec, i) {
     status,
     events,
     filesTouched: spec.files,
-    patch: {
-      file: spec.files[0],
-      before: `export async function handler(req: Request) {\n  const body = await req.json();\n  return charge(body);\n}`,
-      after: `export async function handler(req: Request) {\n  const body = await req.json();\n  const key = req.headers.get("Idempotency-Key");\n  if (!key) return badRequest("Idempotency-Key required");\n\n  const existing = await store.get(key);\n  if (existing) return existing;\n\n  const result = await charge(body);\n  await store.put(key, result, { ttl: 86_400 });\n  return result;\n}`,
-    },
+    patch,
   };
 }
 
 const specs = await inventTasks();
-const runs = Array.from({ length: N_RUNS }, (_, i) => buildRun(specs[i % specs.length], i));
+const patches = await inventPatches(specs);
+const runs = Array.from({ length: N_RUNS }, (_, i) =>
+  buildRun(specs[i % specs.length], i, patches[i % patches.length])
+);
 
 mkdirSync("data", { recursive: true });
 writeFileSync("data/runs.json", JSON.stringify(runs, null, 2));
